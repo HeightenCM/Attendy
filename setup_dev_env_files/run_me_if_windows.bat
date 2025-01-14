@@ -5,8 +5,5 @@ npm i
 npm i --save-dev nodemon
 echo Installation complete!
 echo Installating frontend dependencies...
-cd ../frontend
-npm i
-echo Installation complete!
-echo Goodbye...
+echo Use npm install in the frontend folder
 pause
