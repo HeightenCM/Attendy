@@ -29,7 +29,7 @@ const LoginForm = () => {
       <div className="col-12 col-md-4">
         <div className="card p-4 shadow">
           <h3 className="text-center">Login to Attendy account</h3>
-          <Notification message={"Remember: Your account uses an institutional email."} type={"warning"}></Notification>
+          <Notification message={"Remember: Your account uses an institutional email."} type={"info"}></Notification>
           <form onSubmit={handleSubmit}>
             <TextInput
               label="Email"

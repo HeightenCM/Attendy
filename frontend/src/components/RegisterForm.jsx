@@ -9,55 +9,65 @@ const RegisterForm = () => {
   const [notification, setNotification] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Handle changes in form fields
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // Validate email dynamically when the user enters it
   useEffect(() => {
     const email = formData.email;
     if (email === '') {
-      setNotification(null); // Clear notification when email is empty
+      setNotification(null);
       return;
     }
 
-    // Check if the email ends with @ase.ro
-    if (!email.endsWith('ase.ro')) {
+    if (!email.includes('@')) {
       setNotification({
-        message: 'Invalid email address. Please use a valid institutional email. Hint: It ends with ase.ro.',
+        message: 'Please input a valid email address!',
         type: 'danger',
       });
     } else {
-      // Extract the name from the email and determine the role
       const extractedName = email.split('@')[0];
 
       if (email.endsWith('@stud.ase.ro')) {
         setNotification({
-          message: `Student detected: ${extractedName}.`,
-          type: 'info',
-        });
-      } else if (email.endsWith('@ase.ro')) {
-        setNotification({
-          message: `Teacher detected: ${extractedName}.`,
+          message: `Welcome to Attendy, student ${extractedName}!`,
           type: 'success',
         });
+        setFormData((prevData) => ({ ...prevData, name: email.split('@')[0] }));
+      } else if (email.endsWith('ase.ro')) {
+        setNotification({
+          message: `Greeting professor ${extractedName}! Welcome to Attendy!`,
+          type: 'success',
+          
+        });
+        setFormData((prevData) => ({ ...prevData, name: email.split('@')[0] }));
       } else {
         setNotification({
-          message: 'Invalid account type. Please provide a valid student or teacher email.',
+          message: 'Invalid email. Please use your institutional address. Hint: Ends in ase.ro.',
           type: 'warning',
         });
       }
     }
-  }, [formData.email]); // Trigger useEffect when the email changes
+  }, [formData.email]);
 
-  // Handle form submission (on clicking Register)
+  useEffect(()=>{
+    const name = formData.name;
+    if (name === '') {
+        setNotification(null);
+        return;
+      }
+    setNotification({
+        message:`Welcome to Attendy, ${name}!`,
+        type:'success',
+    });
+  }, [formData.name]);
+
+  // Handle form submission (Gaby, te ocupi)
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission (e.g., API call)
     setTimeout(() => {
       alert('Registered successfully!');
       setIsSubmitting(false);
@@ -70,7 +80,6 @@ const RegisterForm = () => {
         <div className="card p-4 shadow-lg" style={{ boxShadow: '0 4px 15px rgba(255, 255, 255, 0.2)' }}>
           <h3 className="text-center">Create your Attendy account</h3>
 
-          {/* Display the Notification */}
           {notification && <Notification message={notification.message} type={notification.type} />}
 
           <form onSubmit={handleSubmit}>
