@@ -29,8 +29,8 @@ const LoginForm = () => {
     <div className="container d-flex justify-content-center align-items-center min-vh-100">
       <div className="col-12 col-md-4">
         <div className="card p-4 shadow">
-          <h3 className="text-center">Login into account</h3>
-          <Notification message={"Remember: You will need an institutional email!"} type={"warning"}></Notification>
+          <h3 className="text-center">Login to Attendy account</h3>
+          <Notification message={"Remember: Your account uses an institutional email."} type={"info"}></Notification>
           <form onSubmit={handleSubmit}>
             <TextInput
               label="Email"
