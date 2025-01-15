@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import TextInput from './TextInput';
 import Button from './Button';
 import Notification from './Notification';
+import { signup } from '../services/authService';
 
 const RegisterForm = () => {
-  const [formData, setFormData] = useState({ email: '', password: '', name: '' });
+  const [formData, setFormData] = useState({ email: '', password: '', name: '' , isOrganizer: false});
   const [notification, setNotification] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,12 +32,14 @@ const RegisterForm = () => {
       const extractedName = email.split('@')[0];
 
       if (email.endsWith('@stud.ase.ro')) {
+        formData.isOrganizer = false;
         setNotification({
           message: `Welcome to Attendy, student ${extractedName}!`,
           type: 'success',
         });
         setFormData((prevData) => ({ ...prevData, name: email.split('@')[0] }));
       } else if (email.endsWith('ase.ro')) {
+        formData.isOrganizer = true;
         setNotification({
           message: `Greeting professor ${extractedName}! Welcome to Attendy!`,
           type: 'success',
@@ -50,6 +53,7 @@ const RegisterForm = () => {
         });
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.email]);
 
   useEffect(()=>{
@@ -69,10 +73,9 @@ const RegisterForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      alert('Registered successfully!');
-      setIsSubmitting(false);
-    }, 1000);
+    signup(formData);
+
+    setIsSubmitting(false)
   };
 
   return (

@@ -2,16 +2,17 @@ import axios from "axios";
 import { jwtDecode } from 'jwt-decode';
 
 export function signup(userDto) {
-    axios.post('placeholderrl', userDto) //to change url once we have backend working
+    axios.post('http://localhost:3000/api/user/signup', userDto) //to change url to constant
         .then(response =>{
-            localStorage.setItem('token', response.data.token)
+            console.log(response.data)
+            localStorage.setItem('token', response.data)
         })
 }
 
-export function login(userDto) { //the same as signup, but we will probably have a different url
-    axios.post('placeholderrl', userDto) //to change url once we have backend working
+export function login(userDto) {
+    axios.post('http://localhost:3000/api/user/login', userDto) //to change url to constant
         .then(response =>{
-            localStorage.setItem('token', response.data.token)
+            localStorage.setItem('token', response.data)
         })
 }
 
