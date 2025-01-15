@@ -1,5 +1,0 @@
-export interface UserDTO {
-  name: string; //just for sign up
-  email: string;
-  password: string;
-}
