@@ -19,6 +19,7 @@ sequelize.sync({force:true}).then(()=>{
 //APIs
 //app.get('/api/user/test',userController.test)
 app.post('/api/user/signup',userController.signup)
+app.post('/api/user/login', userController.login)
 
 //GET
 app.get('/api/users', async(req, res, next)=>{
