@@ -1,6 +1,7 @@
 const express = require('express');
 const User = require('../models/User');
 const router = express.Router();
+const tokenUtil = require('../utils/tokenUtil')
 
 exports.test = async (req, res) => {
     try {
@@ -19,7 +20,8 @@ exports.signup = async (req, res) => {
         const newUser = await User.create(userDto)
 
         //res.status(201).json(newUser) //For debugging only
-        res.status(201).json("token")
+        const token = await tokenUtil.generateJWT(newUser.email, newUser.isOrganizer)
+        res.status(201).json(token)
     } catch (error) {
         console.error('Error in test route:', error);
         res.status(500).json('Internal server error');

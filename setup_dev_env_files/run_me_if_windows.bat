@@ -5,5 +5,6 @@ npm i
 npm i --save-dev nodemon
 echo Installation complete!
 echo Installating frontend dependencies...
-echo Use 'npm install', 'npm i -D react-router-dom', 'npm install jwt-decode'  in the frontend folder
+echo Use 'npm install', 'npm i -D react-router-dom', 'npm install jwt-decode'  in the frontend folder.
+echo npm install jsonwebtoken in backend if you havent already
 pause
