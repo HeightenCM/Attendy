@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import TextInput from './TextInput';
 import Button from './Button';
 import Notification from './Notification';
+import { login } from '../services/authService';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -18,11 +19,9 @@ const LoginForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Gaby add here an API call
-    setTimeout(() => {
-      alert('Logged in!');
-      setIsSubmitting(false);
-    }, 1000);
+    login(formData)
+
+    setIsSubmitting(false)
   };
 
   return (

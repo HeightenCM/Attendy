@@ -4,7 +4,6 @@ import { jwtDecode } from 'jwt-decode';
 export function signup(userDto) {
     axios.post('http://localhost:3000/api/user/signup', userDto) //to change url to constant
         .then(response =>{
-            console.log(response.data)
             localStorage.setItem('token', response.data)
         })
 }
