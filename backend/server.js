@@ -5,6 +5,7 @@ const sequelize = require ('../backend/database')
 const Event = require('./models/Event')
 const User = require('../backend/models/User')
 const EventGroup = require('./models/EventGroup')
+const userController = require('./controllers/userController')
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,6 +17,8 @@ sequelize.sync({force:true}).then(()=>{
 });
 
 //APIs
+//app.get('/api/user/test',userController.test)
+app.post('/api/user/signup',userController.signup)
 
 //GET
 app.get('/api/users', async(req, res, next)=>{
