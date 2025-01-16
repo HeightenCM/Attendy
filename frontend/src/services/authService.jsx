@@ -29,7 +29,11 @@ export function getRole(){ //returns null, 'participant' or 'organizer'
         return null;
     try{
         const decodedToken = jwtDecode(token)
-        return decodedToken.role;
+        if(decodedToken.role) {
+            return 'organizer'
+        } else {
+            return 'participant'
+        }
     }catch(error){
         console.error('Invalid token', error)
         return null;

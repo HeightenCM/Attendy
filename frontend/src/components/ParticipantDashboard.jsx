@@ -1,5 +1,7 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
 
+// eslint-disable-next-line react/prop-types
 const ParticipantDashboard = ({ name }) => {
   const [code, setCode] = useState('');
   const [cameraActive, setCameraActive] = useState(false);
