@@ -18,7 +18,7 @@ export function login(userDto) {
 
 export function sendParticipationCode(code) {
     const headers = { 
-        'Authorization': 'token' //to change once we have login working
+        'Authorization': `${localStorage.getItem('token')}` //to change once we have login working
     };
     axios.post('placeholderurl', code, { headers }) //to change once we have backend working
 }
