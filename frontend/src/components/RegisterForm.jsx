@@ -82,6 +82,7 @@ const RegisterForm = () => {
     <div className="container d-flex justify-content-center align-items-center min-vh-100">
       <div className="col-12 col-md-4">
         <div className="card p-4 shadow-lg" style={{ boxShadow: '0 4px 15px rgba(255, 255, 255, 0.2)' }}>
+        <img src='/attendy_logo.png'></img>
           <h3 className="text-center">Create your Attendy account</h3>
 
           {notification && <Notification message={notification.message} type={notification.type} />}
