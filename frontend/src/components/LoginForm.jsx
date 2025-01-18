@@ -1,27 +1,39 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import TextInput from './TextInput';
 import Button from './Button';
 import Notification from './Notification';
-import { login } from '../services/authService';
+import { login, getRole } from '../services/authService';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    login(formData)
-
-    setIsSubmitting(false)
+    try {
+      await login(formData);
+      const role = getRole();
+      if(role === 'participant'){
+        navigate('/Participant');
+      } else if(role === 'organizer'){
+        navigate('/Organizer');
+      }
+    } catch (error) {
+      console.error('Login failed',error);
+    } finally{
+      setIsSubmitting(false);
+    }
   };
 
   return (

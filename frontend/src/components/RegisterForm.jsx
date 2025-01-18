@@ -1,15 +1,18 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import TextInput from './TextInput';
 import Button from './Button';
 import Notification from './Notification';
 import { signup } from '../services/authService';
+import { getRole } from '../services/authService';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({ email: '', password: '', name: '' , isOrganizer: false});
   const [notification, setNotification] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,13 +72,23 @@ const RegisterForm = () => {
   }, [formData.name]);
 
   // Handle form submission (Gaby, te ocupi)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    signup(formData);
-
-    setIsSubmitting(false)
+    try {
+      await signup(formData);
+      const role = getRole();
+      console.log(role);
+      if (role === 'organizer') {
+        navigate('/Organizer');
+      } else if (role === 'participant') {
+        navigate('/Participant');
+      }
+    } catch (error) {
+      console.error('Signup failed', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
