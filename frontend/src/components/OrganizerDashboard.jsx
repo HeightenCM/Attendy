@@ -1,6 +1,9 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { createEvents } from '../services/eventService';
 
+// eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   const [events, setEvents] = useState(initialEvents);
   const [selectedEvent, setSelectedEvent] = useState(null);
