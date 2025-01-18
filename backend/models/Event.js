@@ -1,11 +1,16 @@
 const{DataTypes} = require('sequelize')
 const sequelize = require('../database');
 const State = require('../enums/State.js');
+const User = require('./User.js');
 
 const Event = sequelize.define('Event',{
     name:{type:DataTypes.STRING, allowNull:false},
-    description:{type:DataTypes.TEXT},
-    state:{type:State}
+    startTime:{type:DataTypes.TEXT},
+    endTime:{type:DataTypes.TEXT},
+    state:{type:DataTypes.TEXT},
+    code:{type:DataTypes.TEXT}
 })
+
+Event.belongsTo(User, { as: 'organizer', foreignKey: 'email' });
 
 module.exports = Event;

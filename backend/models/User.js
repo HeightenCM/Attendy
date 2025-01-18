@@ -1,6 +1,5 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../database');
-const Event = require('./Event');
 
 const User = sequelize.define('User',{
     name:{type:DataTypes.STRING, allowNull:false},
@@ -8,7 +7,5 @@ const User = sequelize.define('User',{
     password:{type:DataTypes.STRING, allowNull:false},
     isOrganizer:{type:DataTypes.BOOLEAN}
 })
-
-Event.hasMany(User)
 
 module.exports = User;
