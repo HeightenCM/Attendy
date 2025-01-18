@@ -1,99 +1,175 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
+import { createEvents } from '../services/eventService';
 
-
-// eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   const [events, setEvents] = useState(initialEvents);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [newCode, setNewCode] = useState('');
   const [updatedEventDetails, setUpdatedEventDetails] = useState({
+    name: '',
     startTime: '',
     endTime: '',
+    repeat: false,
+    repeatType: 'daily',
+    repeatCount: 1,
   });
 
-  // Helper to generate a random code
-  const generateRandomCode = () => {
-    return Math.random().toString(36).substr(2, 8).toUpperCase();
-  };
+  // Generate a random code
+  const generateRandomCode = () => Math.random().toString(36).substr(2, 8).toUpperCase();
 
-  // Handle selecting an event from the list
+  // Handle clicking an event to edit
   const handleEventClick = (event) => {
     setSelectedEvent(event);
     setUpdatedEventDetails({
-      startTime: event.startTime,
-      endTime: event.endTime,
+      name: event.name,
+      startTime: event.startTime || '',
+      endTime: event.endTime || '',
+      repeat: false,
+      repeatType: 'daily',
+      repeatCount: 1,
     });
+    setNewCode(event.code || '');
   };
 
-  // Handle input changes for the event details
+  // Handle toggling event status
+  const handleToggleStatus = (eventId) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.id === eventId
+          ? { ...event, status: event.status === 'OPEN' ? 'CLOSED' : 'OPEN' }
+          : event
+      )
+    );
+  };
+
+  // Handle form input changes
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUpdatedEventDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]: value,
+    const { name, value, type, checked } = e.target;
+    setUpdatedEventDetails((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
-  // Handle confirming changes
+  // Confirm changes or add new event
   const handleConfirmChanges = () => {
-    if (selectedEvent) {
-      setEvents((prevEvents) =>
-        prevEvents.map((event) =>
-          event.id === selectedEvent.id
-            ? { ...event, ...updatedEventDetails, code: newCode || event.code }
-            : event
-        )
-      );
-      alert('Event details updated successfully!');
-      setSelectedEvent(null);
+    if (!updatedEventDetails.name || !updatedEventDetails.startTime || !updatedEventDetails.endTime) {
+      alert('Please fill out all required fields.');
+      return;
     }
+
+    const newEvents = [];
+    let currentStartTime = new Date(updatedEventDetails.startTime);
+    let currentEndTime = new Date(updatedEventDetails.endTime);
+
+    // Generate the event and its repeats if applicable
+    for (let i = 0; i < (updatedEventDetails.repeat ? updatedEventDetails.repeatCount : 1); i++) {
+      newEvents.push({
+        id: selectedEvent ? selectedEvent.id + i : events.length + newEvents.length + 1,
+        name: `${updatedEventDetails.name}${i > 0 ? ` (Repeat ${i})` : ''}`,
+        startTime: currentStartTime.toISOString(),
+        endTime: currentEndTime.toISOString(),
+        status: 'CLOSED', // Default status is CLOSED
+        code: newCode || generateRandomCode(),
+      });
+
+      if (updatedEventDetails.repeatType === 'daily') {
+        currentStartTime.setDate(currentStartTime.getDate() + 1);
+        currentEndTime.setDate(currentEndTime.getDate() + 1);
+      } else if (updatedEventDetails.repeatType === 'weekly') {
+        currentStartTime.setDate(currentStartTime.getDate() + 7);
+        currentEndTime.setDate(currentEndTime.getDate() + 7);
+      }
+    }
+
+    setEvents((prevEvents) => {
+      const updatedList = selectedEvent
+        ? prevEvents.map((event) =>
+            event.id === selectedEvent.id ? { ...newEvents[0] } : event
+          )
+        : [...prevEvents, ...newEvents];
+      return updatedList;
+    });
+
+    setSelectedEvent(null);
+    alert('Event details updated successfully!');
   };
 
-  // Handle adding a new event
-  const handleAddEvent = () => {
-    const newEvent = {
-      id: events.length + 1,
-      name: `New Event ${events.length + 1}`,
+  // Cancel editing or adding an event
+  const handleCancelEdit = () => {
+    setSelectedEvent(null);
+    setUpdatedEventDetails({
+      name: '',
       startTime: '',
       endTime: '',
-      status: 'CLOSED',
-      code: '',
-    };
-    setEvents((prevEvents) => [...prevEvents, newEvent]);
+      repeat: false,
+      repeatType: 'daily',
+      repeatCount: 1,
+    });
+    setNewCode('');
+  };
+
+  // Start creating a new event
+  const handleAddEvent = () => {
+    setSelectedEvent(null);
+    setUpdatedEventDetails({
+      name: '',
+      startTime: '',
+      endTime: '',
+      repeat: false,
+      repeatType: 'daily',
+      repeatCount: 1,
+    });
+    setNewCode('');
   };
 
   return (
-    <div className="container d-flex flex-column min-vh-100">
-      <h3 className="text-center">Welcome, Organizer {name}!</h3>
-      <div className="row mt-4">
-        {/* Left: Event List */}
-        <div className="col-4">
-          <ul className="list-group">
-            {events.map((event) => (
-              <li
-                key={event.id}
-                className={`list-group-item ${
-                  event.status === 'OPEN' ? 'list-group-item-success' : 'list-group-item-danger'
-                }`}
-                onClick={() => handleEventClick(event)}
-                style={{ cursor: 'pointer' }}
-              >
-                {event.name}
-              </li>
-            ))}
-          </ul>
-          <button className="btn btn-primary mt-3" onClick={handleAddEvent}>
-            Add Event
-          </button>
-        </div>
+    <div className="d-flex justify-content-center align-items-center min-vh-100">
+      <div className="container">
+        <h3 className="text-center mb-4">Welcome, Organizer {name}!</h3>
+        <div className="row">
+          {/* Left: Event List */}
+          <div className="col-5">
+            <ul className="list-group">
+              {events.map((event) => (
+                <li
+                  key={event.id}
+                  className={`list-group-item d-flex justify-content-between align-items-center ${
+                    event.status === 'OPEN' ? 'list-group-item-success' : 'list-group-item-danger'
+                  }`}
+                >
+                  <span onClick={() => handleEventClick(event)} style={{ cursor: 'pointer' }}>
+                    {event.name}
+                  </span>
+                  <button
+                    className="btn btn-sm btn-secondary"
+                    onClick={() => handleToggleStatus(event.id)}
+                  >
+                    {event.status === 'OPEN' ? 'Set CLOSED' : 'Set OPEN'}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button className="btn btn-primary mt-3 w-100" onClick={handleAddEvent}>
+              Add Event
+            </button>
+          </div>
 
-        {/* Right: Event Details */}
-        <div className="col-8">
-          {selectedEvent ? (
+          {/* Right: Event Details */}
+          <div className="col-7">
             <div className="card p-4 shadow">
-              <h5>Edit Event: {selectedEvent.name}</h5>
+              <h5>{selectedEvent ? `Edit Event: ${selectedEvent.name}` : 'Add New Event'}</h5>
               <div className="form-group">
+                <label>Event Name:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="name"
+                  value={updatedEventDetails.name}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="form-group mt-3">
                 <label>Start Time:</label>
                 <input
                   type="datetime-local"
@@ -113,6 +189,43 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                   onChange={handleInputChange}
                 />
               </div>
+              <div className="form-group form-check mt-3">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  name="repeat"
+                  checked={updatedEventDetails.repeat}
+                  onChange={handleInputChange}
+                />
+                <label className="form-check-label">Repeat Event</label>
+              </div>
+              {updatedEventDetails.repeat && (
+                <>
+                  <div className="form-group mt-3">
+                    <label>Repeat Type:</label>
+                    <select
+                      className="form-control"
+                      name="repeatType"
+                      value={updatedEventDetails.repeatType}
+                      onChange={handleInputChange}
+                    >
+                      <option value="daily">Daily</option>
+                      <option value="weekly">Weekly</option>
+                    </select>
+                  </div>
+                  <div className="form-group mt-3">
+                    <label>Repeat Count:</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="repeatCount"
+                      value={updatedEventDetails.repeatCount}
+                      onChange={handleInputChange}
+                      min="1"
+                    />
+                  </div>
+                </>
+              )}
               <div className="d-flex align-items-center mt-3">
                 <button
                   className="btn btn-warning me-3"
@@ -120,23 +233,18 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                 >
                   Generate New Code!
                 </button>
-                <input
-                  type="text"
-                  className="form-control"
-                  readOnly
-                  value={newCode || selectedEvent.code}
-                />
+                <input type="text" className="form-control" readOnly value={newCode} />
               </div>
-              <button
-                className="btn btn-success mt-3"
-                onClick={handleConfirmChanges}
-              >
-                Confirm
-              </button>
+              <div className="mt-3">
+                <button className="btn btn-success me-3" onClick={handleConfirmChanges}>
+                  Confirm
+                </button>
+                <button className="btn btn-secondary" onClick={handleCancelEdit}>
+                  Cancel
+                </button>
+              </div>
             </div>
-          ) : (
-            <p className="text-muted">Select an event to edit its details.</p>
-          )}
+          </div>
         </div>
       </div>
     </div>
