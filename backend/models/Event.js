@@ -1,6 +1,6 @@
 const{DataTypes} = require('sequelize')
 const sequelize = require('../database');
-const State = require('../enums/State');
+const State = require('../enums/State.js');
 
 const Event = sequelize.define('Event',{
     name:{type:DataTypes.STRING, allowNull:false},
