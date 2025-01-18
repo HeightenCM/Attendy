@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
-import { createEvents } from '../services/eventService';
+import { postEvents } from '../services/eventService';
 import {QRCodeSVG} from 'qrcode.react';
 
 // eslint-disable-next-line react/prop-types
@@ -69,7 +69,6 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
     // Generate the event and its repeats if applicable
     for (let i = 0; i < (updatedEventDetails.repeat ? updatedEventDetails.repeatCount : 1); i++) {
       newEvents.push({
-        id: selectedEvent ? selectedEvent.id + i : events.length + newEvents.length + 1,
         name: `${updatedEventDetails.name}${i > 0 ? ` (Repeat ${i})` : ''}`,
         startTime: currentStartTime.toISOString(),
         endTime: currentEndTime.toISOString(),
@@ -84,6 +83,8 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
         currentStartTime.setDate(currentStartTime.getDate() + 7);
         currentEndTime.setDate(currentEndTime.getDate() + 7);
       }
+
+      postEvents(newEvents);
     }
 
     // Update state for displayed events and the event queue
@@ -100,34 +101,6 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
 
     setSelectedEvent(null);
     alert('Event details updated successfully!');
-  };
-
-  // Send the queued events to the backend
-  const handleSendToBackend = () => {
-    if (eventQueue.length === 0) {
-      alert('No events to send.');
-      return;
-    }
-
-    // Prepare the event group DTO to send
-    const eventGroupDto = {
-      events: eventQueue.map((event) => ({
-        name: event.name,
-        startTime: event.startTime,
-        endTime: event.endTime,
-        status: event.status,
-        code: event.code,
-      })),
-    };
-
-    const eventGroupArray = []
-    if(!Array.isArray(eventGroupDto)){
-      
-      eventGroupArray.push(eventGroupDto)
-    }
-      
-    let debugVariable = createEvents(eventGroupArray)
-    console.log(debugVariable)
   };
 
   // Cancel editing or adding an event
@@ -282,11 +255,6 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                 </button>
                 <button className="btn btn-secondary" onClick={handleCancelEdit}>
                   Cancel
-                </button>
-              </div>
-              <div className="mt-3">
-                <button className="btn btn-info w-100" onClick={handleSendToBackend}>
-                  Send Events to Backend
                 </button>
               </div>
             </div>
