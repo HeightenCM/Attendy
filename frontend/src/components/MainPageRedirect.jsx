@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getRole } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ const MainPageRedirect = () => {
         };
     }, []);
 
-    if (!role) return <useNavigate to="/" />;
+    if (!role) useNavigate('/');
     if (role === 'participant') useNavigate('/Participant');
     if (role === 'organizer') useNavigate('/Organizer');
     return null;

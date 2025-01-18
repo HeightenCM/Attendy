@@ -10,6 +10,7 @@ import { login, getRole } from '../services/authService';
 const LoginForm = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notification, setNotification] = useState({'message': 'Remember: Your account uses an institutional email.', 'type': 'info'});
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -31,6 +32,7 @@ const LoginForm = () => {
       }
     } catch (error) {
       console.error('Login failed',error);
+      setNotification({'message': 'Login failed. Please check your credentials. Remember: Your account uses an institutional email!', 'type': 'danger'});
     } finally{
       setIsSubmitting(false);
     }
@@ -42,7 +44,7 @@ const LoginForm = () => {
         <div className="card p-4 shadow">
           <img src='/attendy_logo.png'></img>
           <h3 className="text-center">Login to Attendy account</h3>
-          <Notification message={"Remember: Your account uses an institutional email."} type={"info"}></Notification>
+          {notification && <Notification message={notification.message} type={notification.type} />}
           <form onSubmit={handleSubmit}>
             <TextInput
               label="Email"
