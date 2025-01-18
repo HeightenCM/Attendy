@@ -11,6 +11,6 @@ const Event = sequelize.define('Event',{
     code:{type:DataTypes.TEXT}
 })
 
-Event.belongsTo(User, { as: 'organizer', foreignKey: 'organizer' });
+Event.belongsTo(User, { as: 'organizedBy', foreignKey: 'organizer' });
 
 module.exports = Event;

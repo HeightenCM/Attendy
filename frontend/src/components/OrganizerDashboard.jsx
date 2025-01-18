@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
-// eslint-disable-next-line no-unused-vars
 import { createEvents } from '../services/eventService';
 
 // eslint-disable-next-line react/prop-types
@@ -120,15 +119,8 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
       })),
     };
 
-    createEvents(eventGroupDto)
-      .then(() => {
-        alert('Events successfully sent to the server!');
-        setEventQueue([]); // Clear the queue after successful submission
-      })
-      .catch((error) => {
-        console.error('Error sending events:', error);
-        alert('Failed to send events. Please try again.');
-      });
+    let debugVariable = createEvents(eventGroupDto)
+    console.log(debugVariable)
   };
 
   // Cancel editing or adding an event
