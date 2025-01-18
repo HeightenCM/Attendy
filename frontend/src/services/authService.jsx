@@ -15,14 +15,6 @@ export async function login(userDto) {
         })
 }
 
-
-export function sendParticipationCode(code) {
-    const headers = { 
-        'Authorization': `${localStorage.getItem('token')}` //to change once we have login working
-    };
-    axios.post('placeholderurl', code, { headers }) //to change once we have backend working
-}
-
 export function getRole(){ //returns null, 'participant' or 'organizer'
     const token = localStorage.getItem('token');
     if(!token)
