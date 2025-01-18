@@ -1,15 +1,15 @@
 import axios from "axios";
 import { jwtDecode } from 'jwt-decode';
 
-export function signup(userDto) {
-    axios.post('http://localhost:3000/api/user/signup', userDto) //to change url to constant
+export async function signup(userDto) {
+    await axios.post('http://localhost:3000/api/user/signup', userDto) //to change url to constant
         .then(response =>{
             localStorage.setItem('token', response.data)
         })
 }
 
-export function login(userDto) {
-    axios.post('http://localhost:3000/api/user/login', userDto) //to change url to constant
+export async function login(userDto) {
+    await axios.post('http://localhost:3000/api/user/login', userDto) //to change url to constant
         .then(response =>{
             localStorage.setItem('token', response.data)
         })
