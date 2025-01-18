@@ -86,6 +86,14 @@ const RegisterForm = () => {
       }
     } catch (error) {
       console.error('Signup failed', error);
+      if(error.response)
+        setNotification({
+        message: error.response.data.message,
+        type: 'danger',});
+      else
+        setNotification({
+        message: error.message,
+        type: 'danger',});
     } finally {
       setIsSubmitting(false);
     }

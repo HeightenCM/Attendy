@@ -16,7 +16,7 @@ const MainPageRedirect = () => {
         };
     }, []);
 
-    if (!role) return <Navigate to="/" />;
+    if (!role) useNavigate('/');
     if (role === 'participant') useNavigate('/Participant');
     if (role === 'organizer') useNavigate('/Organizer');
     return null;
