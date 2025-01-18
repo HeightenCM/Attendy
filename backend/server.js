@@ -23,6 +23,7 @@ app.post('/api/user/signup',userController.signup)
 app.post('/api/user/login', userController.login)
 
 app.post('/api/event/createGroup', eventController.createEvents)
+app.get('/api/event/getEvents', eventController.getEvents)
 
 app.post('/api/participation/sendCode',participationController.sendCode)
 

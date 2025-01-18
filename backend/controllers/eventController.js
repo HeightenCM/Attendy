@@ -31,3 +31,13 @@ exports.createEvents = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+exports.getEvents = async (req, res) => {
+    try {
+        
+        //res.status(201).json(events);
+    } catch (error) {
+        console.error('Error in test route:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
