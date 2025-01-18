@@ -31,3 +31,16 @@ export function getRole(){ //returns null, 'participant' or 'organizer'
         return null;
     }
 }
+
+export async function getName(){
+    let name;
+    await axios.get('http://localhost:3000/api/user/name',{
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+        .then(response =>{
+            name = response.data
+        })
+    return name;
+}

@@ -6,6 +6,7 @@ import {QRCodeSVG} from 'qrcode.react';
 // eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   const [events, setEvents] = useState(initialEvents); // State for the events displayed
+  // eslint-disable-next-line no-unused-vars
   const [eventQueue, setEventQueue] = useState([]); // State for the events to be sent to the backend
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [newCode, setNewCode] = useState('');
