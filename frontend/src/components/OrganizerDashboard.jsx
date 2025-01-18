@@ -1,7 +1,10 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { createEvents } from '../services/eventService';
 import {QRCodeSVG} from 'qrcode.react';
 
+// eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   const [events, setEvents] = useState(initialEvents); // State for the events displayed
   const [eventQueue, setEventQueue] = useState([]); // State for the events to be sent to the backend
