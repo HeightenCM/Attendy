@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
 import { createEvents } from '../services/eventService';
+import {QRCodeSVG} from 'qrcode.react';
 
 // eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
@@ -262,6 +263,12 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                   Generate New Code!
                 </button>
                 <input type="text" className="form-control" readOnly value={newCode} />
+              </div>
+              <div className="mt-3">
+                <button className="btn btn-info me-3" onClick={() => {}}>
+                  Generate QR Code!
+                </button>
+                {newCode && <QRCodeSVG value={newCode} size={128} />}
               </div>
               <div className="mt-3">
                 <button className="btn btn-success me-3" onClick={handleConfirmChanges}>
