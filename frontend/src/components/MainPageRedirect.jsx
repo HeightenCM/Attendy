@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-// eslint-disable-next-line no-unused-vars
+ 
 import { useEffect, useState } from 'react';
 import { getRole } from '../services/authService';
 import { useNavigate } from 'react-router-dom';

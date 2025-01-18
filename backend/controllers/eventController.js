@@ -34,6 +34,9 @@ exports.createEvents = async (req, res) => {
 
 exports.getEvents = async (req, res) => {
     try {
+        const userData = await tokenUtil.authenticateToken(req)
+        if(!userData || userData.role !== true) throw new Error('Not authorized')
+        
         
         //res.status(201).json(events);
     } catch (error) {

@@ -8,7 +8,7 @@ export function createEvents(eventGroupDto) {
             }
         }
     )
-        .then(response =>{
-            return response;
-        })
+    .then(response =>{
+        return response;
+    })
 }
