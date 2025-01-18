@@ -57,7 +57,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   };
 
   // Confirm changes or add new event
-  const handleConfirmChanges = () => {
+  const handleConfirmChanges = async () => {
     if (!updatedEventDetails.name || !updatedEventDetails.startTime || !updatedEventDetails.endTime) {
       alert('Please fill out all required fields.');
       return;
@@ -85,18 +85,18 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
         currentEndTime.setDate(currentEndTime.getDate() + 7);
       }
 
-      postEvents(newEvents);
+      setEvents(await postEvents(newEvents));
     }
 
     // Update state for displayed events and the event queue
-    setEvents((prevEvents) => {
-      const updatedList = selectedEvent
-        ? prevEvents.map((event) =>
-            event.id === selectedEvent.id ? { ...newEvents[0] } : event
-          )
-        : [...prevEvents, ...newEvents];
-      return updatedList;
-    });
+    // setEvents((prevEvents) => {
+    //   const updatedList = selectedEvent
+    //     ? prevEvents.map((event) =>
+    //         event.id === selectedEvent.id ? { ...newEvents[0] } : event
+    //       )
+    //     : [...prevEvents, ...newEvents];
+    //   return updatedList;
+    // });
 
     setEventQueue((prevQueue) => [...prevQueue, ...newEvents]); // Add new/updated events to the queue
 
