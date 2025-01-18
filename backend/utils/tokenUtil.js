@@ -15,8 +15,12 @@ exports.authenticateToken = async (req) => {
     const token = req.headers['authorization'] && req.headers['authorization'].split(' ')[1];
     if (!token) return false;
 
-    jwt.verify(token, SECRET_KEY, (err, user) => {
-        if (err) return false;
-        return user; // Attaches the decoded user to the request object
+    const userData = await new Promise((resolve, reject) => {
+        jwt.verify(token, SECRET_KEY, (err, decoded) => {
+            if (err) reject(err);
+            resolve(decoded);
+        });
     });
+
+    return userData;
 }
