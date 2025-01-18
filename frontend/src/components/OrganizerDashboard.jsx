@@ -120,7 +120,13 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
       })),
     };
 
-    let debugVariable = createEvents(eventGroupDto)
+    const eventGroupArray = []
+    if(!Array.isArray(eventGroupDto)){
+      
+      eventGroupArray.push(eventGroupDto)
+    }
+      
+    let debugVariable = createEvents(eventGroupArray)
     console.log(debugVariable)
   };
 

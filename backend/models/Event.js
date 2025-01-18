@@ -8,7 +8,8 @@ const Event = sequelize.define('Event',{
     startTime:{type:DataTypes.TEXT},
     endTime:{type:DataTypes.TEXT},
     state:{type:DataTypes.TEXT},
-    code:{type:DataTypes.TEXT}
+    code:{type:DataTypes.TEXT},
+    participants:{type:DataTypes.JSON}
 })
 
 Event.belongsTo(User, { as: 'organizedBy', foreignKey: 'organizer' });

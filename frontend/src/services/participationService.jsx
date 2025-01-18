@@ -12,7 +12,7 @@ export function getNewCode(eventDto){ //should only work if event is open
 }
 
 export function sendParticipationCode(code){ //returns name of event if code is correct
-    axios.post('http://localhost:3000/api/participation/ParticipantCode',code)
+    axios.post('http://localhost:3000/api/participation/sendCode',code)
         .then(res =>{
             if(res.status === 200)
                 return res.data

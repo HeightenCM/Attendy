@@ -1,18 +1,23 @@
 const express = require('express');
 const tokenUtil = require('../utils/tokenUtil');
 const User = require('../models/User');
+const Event = require('../models/Event')
 
 exports.createEvents = async (req, res) => {
     try {
         const eventGroupArray = req.body;
         //console.log(eventGroupArray)
-        const user = tokenUtil.authenticateToken()
-        if(!user) throw new Error('Not authorized')
+        const userData = await tokenUtil.authenticateToken(req)
+        if(!userData || userData.role !== true) throw new Error('Not authorized')
         if(!Array.isArray(eventGroupArray)){
             throw new Error('Event group not an array');
         }
-        eventGroupArray.array.forEach(async element => {
-            element.organizer = user.email;
+        const user = await User.findOne({
+            where: {email: userData.email}
+        })
+        eventGroupArray.forEach(async (element) => {
+            element.organizer = user.id
+            element.participants = []
             await Event.create(element)
         });
         const events = await Event.findAll({
