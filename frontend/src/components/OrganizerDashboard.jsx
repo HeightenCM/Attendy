@@ -5,7 +5,8 @@ import { createEvents } from '../services/eventService';
 
 // eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
-  const [events, setEvents] = useState(initialEvents);
+  const [events, setEvents] = useState(initialEvents); // State for the events displayed
+  const [eventQueue, setEventQueue] = useState([]); // State for the events to be sent to the backend
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [newCode, setNewCode] = useState('');
   const [updatedEventDetails, setUpdatedEventDetails] = useState({
@@ -85,6 +86,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
       }
     }
 
+    // Update state for displayed events and the event queue
     setEvents((prevEvents) => {
       const updatedList = selectedEvent
         ? prevEvents.map((event) =>
@@ -94,8 +96,39 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
       return updatedList;
     });
 
+    setEventQueue((prevQueue) => [...prevQueue, ...newEvents]); // Add new/updated events to the queue
+
     setSelectedEvent(null);
     alert('Event details updated successfully!');
+  };
+
+  // Send the queued events to the backend
+  const handleSendToBackend = () => {
+    if (eventQueue.length === 0) {
+      alert('No events to send.');
+      return;
+    }
+
+    // Prepare the event group DTO to send
+    const eventGroupDto = {
+      events: eventQueue.map((event) => ({
+        name: event.name,
+        startTime: event.startTime,
+        endTime: event.endTime,
+        status: event.status,
+        code: event.code,
+      })),
+    };
+
+    createEvents(eventGroupDto)
+      .then(() => {
+        alert('Events successfully sent to the server!');
+        setEventQueue([]); // Clear the queue after successful submission
+      })
+      .catch((error) => {
+        console.error('Error sending events:', error);
+        alert('Failed to send events. Please try again.');
+      });
   };
 
   // Cancel editing or adding an event
@@ -244,6 +277,11 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                 </button>
                 <button className="btn btn-secondary" onClick={handleCancelEdit}>
                   Cancel
+                </button>
+              </div>
+              <div className="mt-3">
+                <button className="btn btn-info w-100" onClick={handleSendToBackend}>
+                  Send Events to Backend
                 </button>
               </div>
             </div>
