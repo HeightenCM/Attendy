@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getEvents, postEvents, deleteEvent } from '../services/eventService';
+import { getEvents, postEvents, deleteEvent, updateEvent } from '../services/eventService';
 import { generateCode } from '../services/participationService';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -95,7 +95,6 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
 
     const savedEvents = await postEvents(newEvents);
     setEvents(savedEvents);
-    await handleGenerateCode(selectedEvent.id);
 
     setSelectedEvent(null);
     alert('Event(s) created successfully!');
@@ -103,7 +102,10 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
 
   const handleGenerateCode = async (eventId) => {
     const code = await generateCode(eventId);
-    console.log(code)
+    const updatedEvent = await updateEvent(eventId, { code });
+    setEvents((prevEvents) =>
+      prevEvents.map((event) => (event.id === eventId ? updatedEvent : event))
+    );
     setNewCode(code);
   };
 
@@ -188,6 +190,12 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
               </div>
               {selectedEvent && (
                 <>
+                  <button
+                    className="btn btn-warning mt-3 me-3"
+                    onClick={() => handleGenerateCode(selectedEvent.id)}
+                  >
+                    Generate New Code!
+                  </button>
                   <input type="text" className="form-control mt-3" readOnly value={newCode} />
                   {newCode && <QRCodeSVG value={newCode} size={128} className="mt-3" />}
                 </>
