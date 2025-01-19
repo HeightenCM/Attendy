@@ -1,8 +1,10 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { getEvents, postEvents, deleteEvent } from '../services/eventService';
 import { generateCode } from '../services/participationService';
 import { QRCodeSVG } from 'qrcode.react';
 
+// eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   const [events, setEvents] = useState(Array.isArray(initialEvents) ? initialEvents : []);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -95,14 +97,18 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
 
     const savedEvents = await postEvents(newEvents);
     setEvents(savedEvents);
-
+    
     setSelectedEvent(null);
     alert('Event(s) created successfully!');
   };
 
   const handleGenerateCode = async (eventId) => {
     const code = await generateCode(eventId);
-    setNewCode(code);
+    console.log(code)
+    const auxEvents = events;
+    auxEvents.find(item => item.id === eventId).code = code;
+    setEvents(auxEvents)
+    setNewCode(code||'');
   };
 
   const handleDeleteEvent = async (eventId) => {
@@ -229,7 +235,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                   >
                     Generate New Code!
                   </button>
-                  <input type="text" className="form-control mt-3" readOnly value={newCode} />
+                  <input type="text" className="form-control mt-3" readOnly value={newCode || ''} />
                   {newCode && <QRCodeSVG value={newCode} size={128} className="mt-3" />}
                 </>
               )}
