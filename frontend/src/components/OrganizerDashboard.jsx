@@ -1,13 +1,11 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
-import { postEvents } from '../services/eventService';
+import { getEvents, postEvents } from '../services/eventService';
+import { deleteEvent } from '../services/eventService';
 import {QRCodeSVG} from 'qrcode.react';
 
-// eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
-  const [events, setEvents] = useState(initialEvents); // State for the events displayed
-  // eslint-disable-next-line no-unused-vars
-  const [eventQueue, setEventQueue] = useState([]); // State for the events to be sent to the backend
+  const [events, setEvents] = useState(Array.isArray(initialEvents) ? initialEvents : []);
+  const [eventQueue, setEventQueue] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [newCode, setNewCode] = useState('');
   const [updatedEventDetails, setUpdatedEventDetails] = useState({
@@ -19,10 +17,8 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
     repeatCount: 1,
   });
 
-  // Generate a random code
   const generateRandomCode = () => Math.random().toString(36).substr(2, 8).toUpperCase();
 
-  // Handle clicking an event to edit
   const handleEventClick = (event) => {
     setSelectedEvent(event);
     setUpdatedEventDetails({
@@ -36,7 +32,6 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
     setNewCode(event.code || '');
   };
 
-  // Handle toggling event status
   const handleToggleStatus = (eventId) => {
     setEvents((prevEvents) =>
       prevEvents.map((event) =>
@@ -47,7 +42,6 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
     );
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setUpdatedEventDetails((prev) => ({
@@ -56,7 +50,6 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
     }));
   };
 
-  // Confirm changes or add new event
   const handleConfirmChanges = async () => {
     if (!updatedEventDetails.name || !updatedEventDetails.startTime || !updatedEventDetails.endTime) {
       alert('Please fill out all required fields.');
@@ -67,13 +60,12 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
     let currentStartTime = new Date(updatedEventDetails.startTime);
     let currentEndTime = new Date(updatedEventDetails.endTime);
 
-    // Generate the event and its repeats if applicable
     for (let i = 0; i < (updatedEventDetails.repeat ? updatedEventDetails.repeatCount : 1); i++) {
       newEvents.push({
         name: `${updatedEventDetails.name}${i > 0 ? ` (Repeat ${i})` : ''}`,
         startTime: currentStartTime.toISOString(),
         endTime: currentEndTime.toISOString(),
-        status: 'CLOSED', // Default status is CLOSED
+        status: 'CLOSED', 
         code: newCode || generateRandomCode(),
       });
 
@@ -85,26 +77,16 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
         currentEndTime.setDate(currentEndTime.getDate() + 7);
       }
 
-      setEvents(await postEvents(newEvents));
     }
 
-    // Update state for displayed events and the event queue
-    // setEvents((prevEvents) => {
-    //   const updatedList = selectedEvent
-    //     ? prevEvents.map((event) =>
-    //         event.id === selectedEvent.id ? { ...newEvents[0] } : event
-    //       )
-    //     : [...prevEvents, ...newEvents];
-    //   return updatedList;
-    // });
-
-    setEventQueue((prevQueue) => [...prevQueue, ...newEvents]); // Add new/updated events to the queue
+    const savedEvents = await postEvents(newEvents); // Save to backend
+    setEvents((prevEvents) => [...prevEvents, ...savedEvents]); // Update the UI
+    setEventQueue((prevQueue) => [...prevQueue, ...savedEvents]); // Add to queue
 
     setSelectedEvent(null);
-    alert('Event details updated successfully!');
+    alert("Event details updated successfully!");
   };
 
-  // Cancel editing or adding an event
   const handleCancelEdit = () => {
     setSelectedEvent(null);
     setUpdatedEventDetails({
@@ -116,6 +98,12 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
       repeatCount: 1,
     });
     setNewCode('');
+  };
+
+  const handleDeleteEvent = (eventId) => {
+    deleteEvent(eventId);
+    setEvents(getEvents());
+    setSelectedEvent(null);
   };
 
   // Start creating a new event
@@ -254,8 +242,14 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                 <button className="btn btn-success me-3" onClick={handleConfirmChanges}>
                   Confirm
                 </button>
-                <button className="btn btn-secondary" onClick={handleCancelEdit}>
+                <button className="btn btn-secondary me-3" onClick={handleCancelEdit}>
                   Cancel
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleDeleteEvent(selectedEvent.id)}
+                >
+                  Delete
                 </button>
               </div>
             </div>

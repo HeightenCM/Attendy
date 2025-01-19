@@ -14,7 +14,7 @@ app.use(cors());
 
 //Sync db
 // sequelize.sync({force:true}).then(()=>{
-//     console.log('Db synced')
+//      console.log('Db synced')
 // });
 
 //APIs
