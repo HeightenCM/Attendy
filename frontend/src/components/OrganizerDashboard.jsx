@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getEvents, postEvents } from '../services/eventService';
-import { deleteEvent } from '../services/eventService';
+import { getEvents, postEvents, deleteEvent } from '../services/eventService';
+import { generateCode } from '../services/participationService';
 import { QRCodeSVG } from 'qrcode.react';
 
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
@@ -16,13 +16,23 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
     repeatCount: 1,
   });
 
-
   const determineEventStatus = (startTime, endTime) => {
     const now = new Date();
     return now >= new Date(startTime) && now <= new Date(endTime) ? 'OPEN' : 'CLOSED';
   };
 
   useEffect(() => {
+    const fetchAllEvents = async () => {
+      const events = await getEvents();
+      setEvents(
+        events.map((event) => ({
+          ...event,
+          status: determineEventStatus(event.startTime, event.endTime),
+        }))
+      );
+    };
+    fetchAllEvents();
+
     const intervalId = setInterval(() => {
       setEvents((prevEvents) =>
         prevEvents.map((event) => ({
@@ -30,12 +40,10 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
           status: determineEventStatus(event.startTime, event.endTime),
         }))
       );
-    }, 10000); // Check status every 60 seconds
+    }, 10000); // Check status every 10 seconds
 
     return () => clearInterval(intervalId);
   }, []);
-
-  const generateRandomCode = () => Math.random().toString(36).substr(2, 8).toUpperCase();
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
@@ -74,7 +82,6 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
         startTime: currentStartTime.toISOString(),
         endTime: currentEndTime.toISOString(),
         status: determineEventStatus(currentStartTime, currentEndTime),
-        code: newCode || generateRandomCode(),
       });
 
       if (updatedEventDetails.repeatType === 'daily') {
@@ -86,29 +93,24 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
       }
     }
 
-    const savedEvents = await postEvents(newEvents); 
-    setEvents((prevEvents) => [...prevEvents, ...savedEvents]);
+    const savedEvents = await postEvents(newEvents);
+    setEvents(savedEvents);
+    await handleGenerateCode(selectedEvent.id);
 
     setSelectedEvent(null);
     alert('Event(s) created successfully!');
   };
 
-  const handleCancelEdit = () => {
-    setSelectedEvent(null);
-    setUpdatedEventDetails({
-      name: '',
-      startTime: '',
-      endTime: '',
-      repeat: false,
-      repeatType: 'daily',
-      repeatCount: 1,
-    });
-    setNewCode('');
+  const handleGenerateCode = async (eventId) => {
+    const code = await generateCode(eventId);
+    console.log(code)
+    setNewCode(code);
   };
 
   const handleDeleteEvent = async (eventId) => {
-    deleteEvent(eventId);
-    setEvents(await getEvents());
+    await deleteEvent(eventId);
+    const updatedEvents = await getEvents();
+    setEvents(updatedEvents);
     setSelectedEvent(null);
   };
 
@@ -184,60 +186,18 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="form-group form-check mt-3">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  name="repeat"
-                  checked={updatedEventDetails.repeat}
-                  onChange={handleInputChange}
-                />
-                <label className="form-check-label">Repeat Event</label>
-              </div>
-              {updatedEventDetails.repeat && (
+              {selectedEvent && (
                 <>
-                  <div className="form-group mt-3">
-                    <label>Repeat Type:</label>
-                    <select
-                      className="form-control"
-                      name="repeatType"
-                      value={updatedEventDetails.repeatType}
-                      onChange={handleInputChange}
-                    >
-                      <option value="daily">Daily</option>
-                      <option value="weekly">Weekly</option>
-                    </select>
-                  </div>
-                  <div className="form-group mt-3">
-                    <label>Repeat Count:</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      name="repeatCount"
-                      value={updatedEventDetails.repeatCount}
-                      onChange={handleInputChange}
-                      min="1"
-                    />
-                  </div>
+                  <input type="text" className="form-control mt-3" readOnly value={newCode} />
+                  {newCode && <QRCodeSVG value={newCode} size={128} className="mt-3" />}
                 </>
               )}
-              <div className="d-flex align-items-center mt-3">
-                <button
-                  className="btn btn-warning me-3"
-                  onClick={() => setNewCode(generateRandomCode())}
-                >
-                  Generate New Code!
-                </button>
-                <input type="text" className="form-control" readOnly value={newCode} />
-              </div>
               <div className="mt-3">
-                {newCode && <QRCodeSVG value={newCode} size={128} />}
-              </div>
-              <div className="mt-3">
-                <button className="btn btn-success me-3" onClick={handleConfirmChanges}>
-                  Create
-                </button>
-                <button className="btn btn-secondary me-3" onClick={handleCancelEdit}>
+                {!selectedEvent && (
+                  <button className="btn btn-success me-3" onClick={handleConfirmChanges}>
+                Create Event
+                </button>)}
+                <button className="btn btn-secondary  me-3" onClick={handleAddEvent}>
                   Cancel
                 </button>
                 {selectedEvent && (
@@ -245,7 +205,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                     className="btn btn-danger"
                     onClick={() => handleDeleteEvent(selectedEvent.id)}
                   >
-                    Delete
+                    Delete Event
                   </button>
                 )}
               </div>

@@ -13,7 +13,7 @@ export function getNewCode(eventDto){ //should only work if event is open
 
 export function sendParticipationCode(code){ //returns name of event if code is correct
     const headers = { 
-        'Authorization': `${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
     };
     const codeJson = {"code":code}
     axios.post('http://localhost:3000/api/participation/sendCode', codeJson, { headers })
@@ -27,7 +27,7 @@ export function sendParticipationCode(code){ //returns name of event if code is 
 
 export function getAttendanceList(id){
     const headers = { 
-        'Authorization': `${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
     };
     axios.get(`http://localhost:3000/api/participation/attendanceList?id=${id}`, { headers }).then(res =>{
             if(res.status === 200)
@@ -39,7 +39,7 @@ export function getAttendanceList(id){
 
 export function generateCode(id){
     const headers = { 
-        'Authorization': `${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
     };
     axios.patch(`http://localhost:3000/api/participation/generateCode?id=${id}`, {}, { headers }).then(res =>{
             if(res.status === 200)

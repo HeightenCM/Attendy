@@ -42,3 +42,4 @@ export async function deleteEvent(eventId){
     console.log(events, Array.isArray(events))
     return events;
 }
+

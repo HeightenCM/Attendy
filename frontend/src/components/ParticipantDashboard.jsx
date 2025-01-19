@@ -1,32 +1,57 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import QrScanner from 'react-qr-scanner';
 
-// eslint-disable-next-line react/prop-types
-const ParticipantDashboard = ({ name }) => {
+const ParticipantDashboard = ({ name, fetchValidCodes }) => {
   const [code, setCode] = useState('');
   const [cameraActive, setCameraActive] = useState(false);
   const [message, setMessage] = useState(null);
+  const [validCodes, setValidCodes] = useState([]); // Stores valid codes fetched from the server
 
+  // Fetch valid codes when the component mounts
+  useEffect(() => {
+    const loadValidCodes = async () => {
+      const codes = await fetchValidCodes(); // Fetch valid codes (function provided as a prop)
+      setValidCodes(codes);
+    };
+    loadValidCodes();
+  }, [fetchValidCodes]);
+
+  // Handle manual code entry
   const handleCodeChange = (e) => {
     setCode(e.target.value);
   };
 
+  // Validate the entered or scanned code
   const handleConfirm = () => {
-    // Replace with actual validation logic
-    if (code === 'VALID_CODE') {
-      setMessage({ text: 'All done!', type: 'success' });
+    if (validCodes.includes(code)) {
+      setMessage({ text: 'Code is valid! Welcome.', type: 'success' });
     } else {
-      setMessage({ text: 'Code entered wrong.', type: 'error' });
+      setMessage({ text: 'Invalid code. Please try again.', type: 'error' });
     }
   };
 
+  // Open the camera for QR scanning
   const handleOpenCamera = () => {
     setCameraActive(true);
-    // Implement camera logic, e.g., using a library like `react-webcam`
   };
 
+  // Close the camera
   const handleCloseCamera = () => {
     setCameraActive(false);
+  };
+
+  // Handle QR code scan success
+  const handleScan = (scannedData) => {
+    if (scannedData) {
+      setCode(scannedData.text); // Automatically set the scanned code
+      setCameraActive(false); // Close the camera
+      handleConfirm(); // Validate the scanned code
+    }
+  };
+
+  // Handle errors during QR scanning
+  const handleError = (err) => {
+    console.error('QR Code scan error:', err);
   };
 
   return (
@@ -34,7 +59,7 @@ const ParticipantDashboard = ({ name }) => {
       <div className="col-12 col-md-6">
         <div className="card p-4 shadow">
           <h3 className="text-center">Welcome, participant {name}!</h3>
-          <p className="mt-3">Introduce the code given in class:</p>
+          <p className="mt-3">Enter the code given by the organizer:</p>
           <input
             type="text"
             className="form-control mb-3"
@@ -50,13 +75,15 @@ const ParticipantDashboard = ({ name }) => {
           )}
           {cameraActive && (
             <div className="camera-container mb-3">
-              {/* Replace with an actual webcam component */}
-              <div style={{ border: '2px solid #ccc', padding: '10px', textAlign: 'center' }}>
-                <p>Camera feed (implement webcam here)</p>
-                <button className="btn btn-secondary mt-2" onClick={handleCloseCamera}>
-                  Close Camera
-                </button>
-              </div>
+              <QrScanner
+                delay={300}
+                onError={handleError}
+                onScan={handleScan}
+                style={{ width: '100%' }}
+              />
+              <button className="btn btn-secondary mt-2" onClick={handleCloseCamera}>
+                Close Camera
+              </button>
             </div>
           )}
           <button className="btn btn-success" onClick={handleConfirm}>
@@ -78,3 +105,4 @@ const ParticipantDashboard = ({ name }) => {
 };
 
 export default ParticipantDashboard;
+
