@@ -13,6 +13,8 @@ exports.sendCode = async (req, res) => {
 
         const userData = await tokenUtil.authenticateToken(req)
         if(!userData || userData.role !== false) throw new Error('Not authorized')
+        
+        if(!event) throw new Error('Code invalid')
 
         const user = await User.findOne({
             where: {email: userData.email}
