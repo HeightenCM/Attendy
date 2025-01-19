@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getEvents, postEvents } from '../services/eventService';
 import { deleteEvent } from '../services/eventService';
-import {QRCodeSVG} from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   const [events, setEvents] = useState(Array.isArray(initialEvents) ? initialEvents : []);
@@ -16,6 +16,25 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
     repeatCount: 1,
   });
 
+
+  const determineEventStatus = (startTime, endTime) => {
+    const now = new Date();
+    return now >= new Date(startTime) && now <= new Date(endTime) ? 'OPEN' : 'CLOSED';
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setEvents((prevEvents) =>
+        prevEvents.map((event) => ({
+          ...event,
+          status: determineEventStatus(event.startTime, event.endTime),
+        }))
+      );
+    }, 10000); // Check status every 60 seconds
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   const generateRandomCode = () => Math.random().toString(36).substr(2, 8).toUpperCase();
 
   const handleEventClick = (event) => {
@@ -29,16 +48,6 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
       repeatCount: 1,
     });
     setNewCode(event.code || '');
-  };
-
-  const handleToggleStatus = (eventId) => {
-    setEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event.id === eventId
-          ? { ...event, status: event.status === 'OPEN' ? 'CLOSED' : 'OPEN' }
-          : event
-      )
-    );
   };
 
   const handleInputChange = (e) => {
@@ -64,7 +73,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
         name: `${updatedEventDetails.name}${i > 0 ? ` (Repeat ${i})` : ''}`,
         startTime: currentStartTime.toISOString(),
         endTime: currentEndTime.toISOString(),
-        status: 'CLOSED', 
+        status: determineEventStatus(currentStartTime, currentEndTime),
         code: newCode || generateRandomCode(),
       });
 
@@ -75,14 +84,13 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
         currentStartTime.setDate(currentStartTime.getDate() + 7);
         currentEndTime.setDate(currentEndTime.getDate() + 7);
       }
-
     }
 
-    const savedEvents = await postEvents(newEvents); // Save to backend
-    setEvents((prevEvents) => [...prevEvents, ...savedEvents]); // Update the UI
+    const savedEvents = await postEvents(newEvents); 
+    setEvents((prevEvents) => [...prevEvents, ...savedEvents]);
 
     setSelectedEvent(null);
-    alert("Event details updated successfully!");
+    alert('Event(s) created successfully!');
   };
 
   const handleCancelEdit = () => {
@@ -122,7 +130,6 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
       <div className="container">
         <h3 className="text-center mb-4">Welcome, Organizer {name}!</h3>
         <div className="row">
-          {/* Left: Event List */}
           <div className="col-5">
             <ul className="list-group">
               {events.map((event) => (
@@ -135,12 +142,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                   <span onClick={() => handleEventClick(event)} style={{ cursor: 'pointer' }}>
                     {event.name}
                   </span>
-                  <button
-                    className="btn btn-sm btn-secondary"
-                    onClick={() => handleToggleStatus(event.id)}
-                  >
-                    {event.status === 'OPEN' ? 'Set CLOSED' : 'Set OPEN'}
-                  </button>
+                  <span>{event.status}</span>
                 </li>
               ))}
             </ul>
@@ -149,10 +151,9 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
             </button>
           </div>
 
-          {/* Right: Event Details */}
           <div className="col-7">
             <div className="card p-4 shadow">
-              <h5>{selectedEvent ? `Edit Event: ${selectedEvent.name}` : 'Add New Event'}</h5>
+              <h5>{selectedEvent ? `Check Event: ${selectedEvent.name}` : 'Add New Event'}</h5>
               <div className="form-group">
                 <label>Event Name:</label>
                 <input
@@ -230,23 +231,23 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                 <input type="text" className="form-control" readOnly value={newCode} />
               </div>
               <div className="mt-3">
-                <button className="btn btn-info me-3" onClick={() => {}}>
-                  Generate QR Code!
-                </button>
                 {newCode && <QRCodeSVG value={newCode} size={128} />}
               </div>
               <div className="mt-3">
                 <button className="btn btn-success me-3" onClick={handleConfirmChanges}>
-                  Confirm
+                  Create
                 </button>
                 <button className="btn btn-secondary me-3" onClick={handleCancelEdit}>
                   Cancel
                 </button>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => handleDeleteEvent(selectedEvent.id)}>
-                  Delete
-                </button>
+                {selectedEvent && (
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleDeleteEvent(selectedEvent.id)}
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
           </div>
