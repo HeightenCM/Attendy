@@ -1,10 +1,8 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { getEvents, postEvents, deleteEvent } from '../services/eventService';
 import { generateCode } from '../services/participationService';
 import { QRCodeSVG } from 'qrcode.react';
 
-// eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   const [events, setEvents] = useState(Array.isArray(initialEvents) ? initialEvents : []);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -42,7 +40,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
           status: determineEventStatus(event.startTime, event.endTime),
         }))
       );
-    }, 10000); // Check status every 10 seconds
+    }, 10000);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -186,6 +184,43 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                   onChange={handleInputChange}
                 />
               </div>
+              <div className="form-check mt-3">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  name="repeat"
+                  checked={updatedEventDetails.repeat}
+                  onChange={handleInputChange}
+                />
+                <label className="form-check-label">Repeat Event</label>
+              </div>
+              {updatedEventDetails.repeat && (
+                <>
+                  <div className="form-group mt-3">
+                    <label>Repeat Type:</label>
+                    <select
+                      className="form-select"
+                      name="repeatType"
+                      value={updatedEventDetails.repeatType}
+                      onChange={handleInputChange}
+                    >
+                      <option value="daily">Daily</option>
+                      <option value="weekly">Weekly</option>
+                    </select>
+                  </div>
+                  <div className="form-group mt-3">
+                    <label>Repeat Count:</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="repeatCount"
+                      value={updatedEventDetails.repeatCount}
+                      onChange={handleInputChange}
+                      min="1"
+                    />
+                  </div>
+                </>
+              )}
               {selectedEvent && (
                 <>
                   <button
@@ -201,9 +236,10 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
               <div className="mt-3">
                 {!selectedEvent && (
                   <button className="btn btn-success me-3" onClick={handleConfirmChanges}>
-                Create Event
-                </button>)}
-                <button className="btn btn-secondary  me-3" onClick={handleAddEvent}>
+                    Create Event
+                  </button>
+                )}
+                <button className="btn btn-secondary me-3" onClick={handleAddEvent}>
                   Cancel
                 </button>
                 {selectedEvent && (
