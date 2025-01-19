@@ -1,10 +1,8 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
 import { getEvents, postEvents } from '../services/eventService';
 import { deleteEvent } from '../services/eventService';
 import {QRCodeSVG} from 'qrcode.react';
 
-// eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   const [events, setEvents] = useState(Array.isArray(initialEvents) ? initialEvents : []);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -100,13 +98,12 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
     setNewCode('');
   };
 
-  const handleDeleteEvent = (eventId) => {
+  const handleDeleteEvent = async (eventId) => {
     deleteEvent(eventId);
-    setEvents(getEvents());
+    setEvents(await getEvents());
     setSelectedEvent(null);
   };
 
-  // Start creating a new event
   const handleAddEvent = () => {
     setSelectedEvent(null);
     setUpdatedEventDetails({
@@ -247,8 +244,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                 </button>
                 <button
                   className="btn btn-danger"
-                  onClick={() => handleDeleteEvent(selectedEvent.id)}
-                >
+                  onClick={() => handleDeleteEvent(selectedEvent.id)}>
                   Delete
                 </button>
               </div>
