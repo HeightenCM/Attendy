@@ -60,6 +60,6 @@ exports.deleteEvent = async (req, res) => {
         where: { organizer: user.id, id: id }
     })
 
-    const events = await eventRepository.getEventsByOrganizer(user.id)
-    res.status(204).json(events);
+    //const events = await eventRepository.getEventsByOrganizer(user.id)
+    res.status(204).json(result);
 }
