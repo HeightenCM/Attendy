@@ -4,8 +4,8 @@ import { deleteEvent } from '../services/eventService';
 import {QRCodeSVG} from 'qrcode.react';
 
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
-  const [events, setEvents] = useState(initialEvents); 
-  const [eventQueue, setEventQueue] = useState([]); 
+  const [events, setEvents] = useState(Array.isArray(initialEvents) ? initialEvents : []);
+  const [eventQueue, setEventQueue] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [newCode, setNewCode] = useState('');
   const [updatedEventDetails, setUpdatedEventDetails] = useState({

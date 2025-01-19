@@ -25,6 +25,7 @@ export async function getEvents() {
     ).then(response =>{
         events = response.data;
     })
+    console.log(events, Array.isArray(events))
     return events;
 }
 
@@ -38,5 +39,6 @@ export async function deleteEvent(eventId){
     }).then(response =>{
         events = response.data;
     })
+    console.log(events, Array.isArray(events))
     return events;
 }
