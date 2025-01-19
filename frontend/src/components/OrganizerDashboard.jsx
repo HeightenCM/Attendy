@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { postEvents } from '../services/eventService';
+import { getEvents, postEvents } from '../services/eventService';
+import { deleteEvent } from '../services/eventService';
 import {QRCodeSVG} from 'qrcode.react';
 
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
@@ -100,7 +101,8 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   };
 
   const handleDeleteEvent = (eventId) => {
-    setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));
+    deleteEvent(eventId);
+    setEvents(getEvents());
     setSelectedEvent(null);
   };
 

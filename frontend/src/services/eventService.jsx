@@ -17,7 +17,7 @@ export async function postEvents(eventGroupDto) {
 export async function getEvents() {
     const token = localStorage.getItem('token')
     let events;
-    await axios.get('http://localhost:3000/api/event/createGroup', {
+    await axios.get('http://localhost:3000/api/event/getEvents', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
