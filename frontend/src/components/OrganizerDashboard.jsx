@@ -1,8 +1,10 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
-import { getEvents, postEvents, deleteEvent, updateEvent } from '../services/eventService';
+import { getEvents, postEvents, deleteEvent } from '../services/eventService';
 import { generateCode } from '../services/participationService';
 import { QRCodeSVG } from 'qrcode.react';
 
+// eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   const [events, setEvents] = useState(Array.isArray(initialEvents) ? initialEvents : []);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -102,10 +104,6 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
 
   const handleGenerateCode = async (eventId) => {
     const code = await generateCode(eventId);
-    const updatedEvent = await updateEvent(eventId, { code });
-    setEvents((prevEvents) =>
-      prevEvents.map((event) => (event.id === eventId ? updatedEvent : event))
-    );
     setNewCode(code);
   };
 

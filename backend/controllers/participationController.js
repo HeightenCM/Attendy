@@ -58,7 +58,7 @@ exports.generateRandomCode = async (req, res) => {
 
     const userData = await tokenUtil.authenticateToken(req)
     console.log(userData)
-    if(!userData || userData.role == true) throw new Error('Not authorized');
+    if(!userData || userData.role !== true) throw new Error('Not authorized');
     const user = userRepository.getElementByEmail(userData.email)
     const events = await Event.findAll()
     

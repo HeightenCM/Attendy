@@ -43,21 +43,3 @@ export async function deleteEvent(eventId){
     return events;
 }
 
-export const updateEvent = async (eventId, updatedData) => {
-    const token = localStorage.getItem('token');
-    try {
-      const response = await axios.put(
-        `http://localhost:3000/api/event/update?id=${eventId}`, 
-        updatedData, 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error updating the event:", error);
-      throw error;
-    }
-  };
