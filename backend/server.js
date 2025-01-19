@@ -21,6 +21,7 @@ app.use(cors());
 //app.get('/api/user/test',userController.test)
 app.post('/api/user/signup',userController.signup)
 app.post('/api/user/login', userController.login)
+app.get('/api/user/name', userController.getName)
 
 app.post('/api/event/createGroup', eventController.createEvents)
 app.get('/api/event/getEvents', eventController.getEvents)

@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('../models/User');
 const router = express.Router();
 const tokenUtil = require('../utils/tokenUtil')
+const userRepository = require('../repositories/userRepository')
 
 exports.test = async (req, res) => {
     try {
@@ -52,5 +53,18 @@ exports.login = async (req, res) => {
     } catch (error) {
         console.error('Error in test route:', error);
         res.status(500).json('Internal server error');
+    }
+}
+
+exports.getName = async (req, res) => {
+    try {
+        const userData = await tokenUtil.authenticateToken(req)
+        if(!userData || userData.role !== true) throw new Error('Not authorized');
+        console.log(userData)
+        user = await userRepository.getElementByEmail(userData.email)
+        res.status(200).json(user.name)
+    } catch (error) {
+        console.error('Error in test route:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
