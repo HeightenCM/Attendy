@@ -13,3 +13,17 @@ export async function postEvents(eventGroupDto) {
     })
     return events;
 }
+
+export async function getEvents() {
+    const token = localStorage.getItem('token')
+    let events;
+    await axios.get('http://localhost:3000/api/event/createGroup', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
+    ).then(response =>{
+        events = response.data;
+    })
+    return events;
+}
