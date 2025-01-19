@@ -59,10 +59,7 @@ exports.deleteEvent = async (req, res) => {
     const result = await Event.destroy({
         where: { organizer: user.id, id: id }
     })
-    if (result) {
-        res.status(200).json({ message: 'Item deleted successfully' });
-    } else {
-        res.status(404).json({ message: 'Item not found' });
-    }
 
+    const events = await eventRepository.getEventsByOrganizer(user.id)
+    res.status(204).json(events);
 }
