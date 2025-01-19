@@ -46,3 +46,23 @@ exports.getEvents = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+exports.deleteEvent = async (req, res) => {
+    const id = req.query.id
+    if(!id) return res.status(400).json({ error: 'ID is required' })
+
+    const userData = await tokenUtil.authenticateToken(req)
+    if(!userData || userData.role !== true) throw new Error('Not authorized')
+    const user = await User.findOne({
+        where: {email: userData.email}
+    })
+    const result = await Event.destroy({
+        where: { organizer: user.id, id: id }
+    })
+    if (result) {
+        res.status(200).json({ message: 'Item deleted successfully' });
+    } else {
+        res.status(404).json({ message: 'Item not found' });
+    }
+
+}

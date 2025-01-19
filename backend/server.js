@@ -25,6 +25,7 @@ app.get('/api/user/name', userController.getName)
 
 app.post('/api/event/createGroup', eventController.createEvents)
 app.get('/api/event/getEvents', eventController.getEvents)
+app.delete('/api/event/delete', eventController.deleteEvent)
 
 app.post('/api/participation/sendCode',participationController.sendCode)
 app.get('/api/participation/attendanceList',participationController.getAttendanceList)
