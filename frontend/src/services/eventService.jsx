@@ -27,3 +27,16 @@ export async function getEvents() {
     })
     return events;
 }
+
+export async function deleteEvent(eventId){
+    const token = localStorage.getItem('token')
+    let events;
+    await axios.delete(`http://localhost:3000/api/event/delete?id=${eventId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response =>{
+        events = response.data;
+    })
+    return events;
+}
