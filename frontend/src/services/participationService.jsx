@@ -21,6 +21,18 @@ export function sendParticipationCode(code){ //returns name of event if code is 
             if(res.status === 200)
                 return res.data
             else
-                return false
+                return null
+        })
+}
+
+export function getAttendanceList(id){
+    const headers = { 
+        'Authorization': `${localStorage.getItem('token')}` //to change once we have login working
+    };
+    axios.get(`http://localhost:3000/api/participation/sendCode?id=${id}`, { headers }).then(res =>{
+            if(res.status === 200)
+                return res.data
+            else
+                return null
         })
 }

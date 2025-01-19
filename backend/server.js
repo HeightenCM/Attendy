@@ -27,6 +27,7 @@ app.post('/api/event/createGroup', eventController.createEvents)
 app.get('/api/event/getEvents', eventController.getEvents)
 
 app.post('/api/participation/sendCode',participationController.sendCode)
+app.get('/api/participation/getAttendanceList',participationController.getAttendanceList)
 
 //Server start
 app.listen(3000,()=>console.log('Server running on port 3000'))

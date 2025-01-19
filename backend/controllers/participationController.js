@@ -32,3 +32,17 @@ exports.sendCode = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+exports.getAttendanceList = async (req, res) => {
+    try {
+        const id = req.query.id
+        if(!id) return res.status(400).json({ error: 'ID is required' })
+        const event = await Event.findOne({
+            where: {id: id}
+        })
+        res.status(200).json(event.participants);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
