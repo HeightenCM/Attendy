@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
-const State = require("../enums/State.js");
 const User = require("./User.js");
+const EventParticipant = require("./EventParticipant.js");
 
 const Event = sequelize.define("Event", {
   name: { type: DataTypes.STRING, allowNull: false },
@@ -12,7 +12,5 @@ const Event = sequelize.define("Event", {
   repeatCount: { type: DataTypes.INTEGER, allowNull: true },
   group: { type: DataTypes.STRING, allowNull: false },
 });
-
-Event.belongsTo(User, { as: "organizedBy", foreignKey: "organizer" });
 
 module.exports = Event;
