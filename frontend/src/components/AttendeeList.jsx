@@ -22,6 +22,18 @@ const AttendeeList = (attendees) => {
               </h1>
               <button
                 type="button"
+                className="btn btn-primary"
+              >.CSV</button>
+              <button
+                type="button"
+                className="btn btn-primary"
+              >.XLS</button>
+              {/* <button
+                type="button"
+                className="btn btn-primary"
+              >Refresh</button> */}
+              <button
+                type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
