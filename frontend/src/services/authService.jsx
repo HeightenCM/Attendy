@@ -1,5 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from 'jwt-decode';
+import { Navigate } from "react-router-dom";
 
 export async function signup(userDto) {
     await axios.post('http://localhost:3000/api/user/signup', userDto) //to change url to constant
@@ -43,4 +44,9 @@ export async function getName(){
             name = response.data
         })
     return name;
+}
+
+export function disconnect(){
+    localStorage.removeItem()
+    return <Navigate to="/" />
 }

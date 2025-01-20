@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
@@ -8,6 +9,7 @@ import LoginPage from './components/LoginForm';
 import SignupPage from './components/RegisterForm';
 import { getRole } from './services/authService';
 
+// eslint-disable-next-line react/prop-types
 const PrivateRoute = ({ children, role }) => {
     const userRole = getRole();
     if (!userRole) return <Navigate to="/" />;
