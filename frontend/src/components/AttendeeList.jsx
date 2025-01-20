@@ -1,10 +1,14 @@
 import React from "react";
 import { useState } from "react";
-import { getAttendanceList } from "../services/participationService";
 
-const AttendeeList = async (id) => {
-  const [attendees, setAttendees] = useState(await getAttendanceList(id));
-
+const AttendeeList = (attendees) => {
+  let aux = [];
+  if (!Array.isArray(attendees)) {
+    aux.push(attendees);
+    attendees = aux;
+  }
+  console.log("Aux is ", aux);
+  const [attendeesList, setAttendeesList] = useState(aux);
   return (
     <>
       <div
@@ -29,11 +33,12 @@ const AttendeeList = async (id) => {
             </div>
             <div className="modal-body">
               <ul className="list-group">
-                {attendees.map((attendee) => (
-                  <li className="list-group-item" key={attendee.email}>
-                    {attendee.name}
-                  </li>
-                ))}
+                {attendeesList &&
+                  attendeesList.map((attendee) => (
+                    <li className="list-group-item" key={attendee.email}>
+                      {attendee.name}
+                    </li>
+                  ))}
               </ul>
             </div>
           </div>
