@@ -154,7 +154,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   };
 
   const passAttendees = () => {
-    console.log("attendees when passing: ",attendees);
+    console.log("attendees when passing: ", attendees);
     return attendees;
   };
 
