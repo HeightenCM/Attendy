@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
 import { CSVLink } from "react-csv";
+// eslint-disable-next-line no-unused-vars
 import xlsx from "json-as-xlsx";
 
 const AttendeeList = (attendees) => {

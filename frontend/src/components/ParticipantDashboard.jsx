@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import QrScanner from 'react-qr-scanner';
 import { sendParticipationCode } from '../services/participationService'
+import NavBar from './NavBar';
 
 // eslint-disable-next-line react/prop-types
 const ParticipantDashboard = ({ name }) => {
@@ -49,49 +50,52 @@ const ParticipantDashboard = ({ name }) => {
   };
 
   return (
-    <div className="container d-flex flex-column justify-content-center align-items-center min-vh-100">
-      <div className="col-12 col-md-6">
-        <div className="card p-4 shadow">
-          <h3 className="text-center">Welcome, participant {name}!</h3>
-          <p className="mt-3">Enter the code given by the organizer:</p>
-          <input
-            type="text"
-            className="form-control mb-3"
-            value={code}
-            onChange={handleCodeChange}
-            placeholder="Enter the code"
-          />
-          <p>Or scan the QR Code:</p>
-          {!cameraActive && (
-            <button className="btn btn-primary mb-3" onClick={handleOpenCamera}>
-              Open Camera
-            </button>
-          )}
-          {cameraActive && (
-            <div className="camera-container mb-3">
-              <QrScanner
-                delay={300}
-                onError={handleError}
-                onScan={handleScan}
-                style={{ width: '100%' }}
-              />
-              <button className="btn btn-secondary mt-2" onClick={handleCloseCamera}>
-                Close Camera
+    <div>
+      <NavBar></NavBar>
+      <div className="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+        <div className="col-12 col-md-6">
+          <div className="card p-4 shadow">
+            <h3 className="text-center">Welcome, participant {name}!</h3>
+            <p className="mt-3">Enter the code given by the organizer:</p>
+            <input
+              type="text"
+              className="form-control mb-3"
+              value={code}
+              onChange={handleCodeChange}
+              placeholder="Enter the code"
+            />
+            <p>Or scan the QR Code:</p>
+            {!cameraActive && (
+              <button className="btn btn-primary mb-3" onClick={handleOpenCamera}>
+                Open Camera
               </button>
-            </div>
-          )}
-          <button className="btn btn-success" onClick={handleConfirm}>
-            Confirm
-          </button>
-          {message && (
-            <div
-              className={`alert mt-3 ${
-                message.type === 'success' ? 'alert-success' : 'alert-danger'
-              }`}
-            >
-              {message.text}
-            </div>
-          )}
+            )}
+            {cameraActive && (
+              <div className="camera-container mb-3">
+                <QrScanner
+                  delay={300}
+                  onError={handleError}
+                  onScan={handleScan}
+                  style={{ width: '100%' }}
+                />
+                <button className="btn btn-secondary mt-2" onClick={handleCloseCamera}>
+                  Close Camera
+                </button>
+              </div>
+            )}
+            <button className="btn btn-success" onClick={handleConfirm}>
+              Confirm
+            </button>
+            {message && (
+              <div
+                className={`alert mt-3 ${
+                  message.type === 'success' ? 'alert-success' : 'alert-danger'
+                }`}
+              >
+                {message.text}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -7,6 +7,8 @@ import {
 } from "../services/participationService";
 import { QRCodeSVG } from "qrcode.react";
 import AttendeeList from "./AttendeeList";
+// eslint-disable-next-line no-unused-vars
+import NavBar from "./NavBar";
 
 // eslint-disable-next-line react/prop-types
 const OrganizerDashboard = ({ name, initialEvents = [] }) => {
@@ -159,171 +161,175 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100">
-      <div className="container">
-        <h3 className="text-center mb-4">Welcome, Organizer {name}!</h3>
-        <div className="row">
-          <div className="col-5">
-            <ul className="list-group">
-              {events.map((event) => (
-                <div key={event.id}>
-                  <AttendeeList attendees={passAttendees()} />
-                  <li
-                    className={`list-group-item d-flex justify-content-between align-items-center ${
-                      event.status === "OPEN"
-                        ? "list-group-item-success"
-                        : "list-group-item-danger"
-                    }`}
-                  >
-                    <span
-                      onClick={() => handleEventClick(event)}
-                      style={{ cursor: "pointer" }}
+    <div>
+      <NavBar></NavBar>
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <div className="container">
+          <h3 className="text-center mb-4">Welcome, Organizer {name}!</h3>
+          <div className="row">
+            <div className="col-5">
+              <ul className="list-group">
+                {events.map((event) => (
+                  <div key={event.id}>
+                    <AttendeeList attendees={passAttendees()} />
+                    <li
+                      className={`list-group-item d-flex justify-content-between align-items-center ${
+                        event.status === "OPEN"
+                          ? "list-group-item-success"
+                          : "list-group-item-danger"
+                      }`}
                     >
-                      {event.name}
-                    </span>
-                    <span
-                      onClick={() => handleUpdateList(event.id)}
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      style={{ cursor: "pointer" }}
-                    >
-                      See attendee list
-                    </span>
-                    <span>{event.status}</span>
-                  </li>
-                </div>
-              ))}
-            </ul>
-            <button
-              className="btn btn-primary mt-3 w-100"
-              onClick={handleAddEvent}
-            >
-              Add Event
-            </button>
-          </div>
+                      <span
+                        onClick={() => handleEventClick(event)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {event.name}
+                      </span>
+                      <span
+                        onClick={() => handleUpdateList(event.id)}
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        style={{ cursor: "pointer" }}
+                      >
+                        See attendee list
+                      </span>
+                      <span>{event.status}</span>
+                    </li>
+                  </div>
+                ))}
+              </ul>
+              <button
+                className="btn btn-primary mt-3 w-100"
+                onClick={handleAddEvent}
+              >
+                Add Event
+              </button>
+            </div>
 
-          <div className="col-7">
-            <div className="card p-4 shadow">
-              <h5>
-                {selectedEvent
-                  ? `Check Event: ${selectedEvent.name}`
-                  : "Add New Event"}
-              </h5>
-              <div className="form-group">
-                <label>Event Name:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="name"
-                  value={updatedEventDetails.name}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group mt-3">
-                <label>Start Time:</label>
-                <input
-                  type="datetime-local"
-                  className="form-control"
-                  name="startTime"
-                  value={updatedEventDetails.startTime}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group mt-3">
-                <label>End Time:</label>
-                <input
-                  type="datetime-local"
-                  className="form-control"
-                  name="endTime"
-                  value={updatedEventDetails.endTime}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-check mt-3">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  name="repeat"
-                  checked={updatedEventDetails.repeat}
-                  onChange={handleInputChange}
-                />
-                <label className="form-check-label">Repeat Event</label>
-              </div>
-              {updatedEventDetails.repeat && (
-                <>
-                  <div className="form-group mt-3">
-                    <label>Repeat Type:</label>
-                    <select
-                      className="form-select"
-                      name="repeatType"
-                      value={updatedEventDetails.repeatType}
-                      onChange={handleInputChange}
-                    >
-                      <option value="daily">Daily</option>
-                      <option value="weekly">Weekly</option>
-                    </select>
-                  </div>
-                  <div className="form-group mt-3">
-                    <label>Repeat Count:</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      name="repeatCount"
-                      value={updatedEventDetails.repeatCount}
-                      onChange={handleInputChange}
-                      min="1"
-                    />
-                  </div>
-                </>
-              )}
-              {selectedEvent && (
-                <>
-                  <button
-                    className="btn btn-warning mt-3 me-3"
-                    onClick={() => handleGenerateCode(selectedEvent.id)}
-                  >
-                    Generate New Code!
-                  </button>
+            <div className="col-7">
+              <div className="card p-4 shadow">
+                <h5>
+                  {selectedEvent
+                    ? `Check Event: ${selectedEvent.name}`
+                    : "Add New Event"}
+                </h5>
+                <div className="form-group">
+                  <label>Event Name:</label>
                   <input
                     type="text"
-                    className="form-control mt-3"
-                    readOnly
-                    value={newCode || ""}
+                    className="form-control"
+                    name="name"
+                    value={updatedEventDetails.name}
+                    onChange={handleInputChange}
                   />
-                  {newCode && (
-                    <QRCodeSVG value={newCode} size={128} className="mt-3" />
-                  )}
-                </>
-              )}
-              <div className="mt-3">
-                {!selectedEvent && (
-                  <button
-                    className="btn btn-success me-3"
-                    onClick={handleConfirmChanges}
-                  >
-                    Create Event
-                  </button>
+                </div>
+                <div className="form-group mt-3">
+                  <label>Start Time:</label>
+                  <input
+                    type="datetime-local"
+                    className="form-control"
+                    name="startTime"
+                    value={updatedEventDetails.startTime}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-group mt-3">
+                  <label>End Time:</label>
+                  <input
+                    type="datetime-local"
+                    className="form-control"
+                    name="endTime"
+                    value={updatedEventDetails.endTime}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-check mt-3">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    name="repeat"
+                    checked={updatedEventDetails.repeat}
+                    onChange={handleInputChange}
+                  />
+                  <label className="form-check-label">Repeat Event</label>
+                </div>
+                {updatedEventDetails.repeat && (
+                  <>
+                    <div className="form-group mt-3">
+                      <label>Repeat Type:</label>
+                      <select
+                        className="form-select"
+                        name="repeatType"
+                        value={updatedEventDetails.repeatType}
+                        onChange={handleInputChange}
+                      >
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                      </select>
+                    </div>
+                    <div className="form-group mt-3">
+                      <label>Repeat Count:</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        name="repeatCount"
+                        value={updatedEventDetails.repeatCount}
+                        onChange={handleInputChange}
+                        min="1"
+                      />
+                    </div>
+                  </>
                 )}
-                <button
-                  className="btn btn-secondary me-3"
-                  onClick={handleAddEvent}
-                >
-                  Cancel
-                </button>
                 {selectedEvent && (
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleDeleteEvent(selectedEvent.id)}
-                  >
-                    Delete Event
-                  </button>
+                  <>
+                    <button
+                      className="btn btn-warning mt-3 me-3"
+                      onClick={() => handleGenerateCode(selectedEvent.id)}
+                    >
+                      Generate New Code!
+                    </button>
+                    <input
+                      type="text"
+                      className="form-control mt-3"
+                      readOnly
+                      value={newCode || ""}
+                    />
+                    {newCode && (
+                      <QRCodeSVG value={newCode} size={128} className="mt-3" />
+                    )}
+                  </>
                 )}
+                <div className="mt-3">
+                  {!selectedEvent && (
+                    <button
+                      className="btn btn-success me-3"
+                      onClick={handleConfirmChanges}
+                    >
+                      Create Event
+                    </button>
+                  )}
+                  <button
+                    className="btn btn-secondary me-3"
+                    onClick={handleAddEvent}
+                  >
+                    Cancel
+                  </button>
+                  {selectedEvent && (
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleDeleteEvent(selectedEvent.id)}
+                    >
+                      Delete Event
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    
   );
 };
 
