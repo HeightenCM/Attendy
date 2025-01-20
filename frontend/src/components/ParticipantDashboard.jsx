@@ -1,20 +1,13 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import QrScanner from 'react-qr-scanner';
+import { sendParticipationCode } from '../services/participationService'
 
-const ParticipantDashboard = ({ name, fetchValidCodes }) => {
+// eslint-disable-next-line react/prop-types
+const ParticipantDashboard = ({ name }) => {
   const [code, setCode] = useState('');
   const [cameraActive, setCameraActive] = useState(false);
   const [message, setMessage] = useState(null);
-  const [validCodes, setValidCodes] = useState([]); // Stores valid codes fetched from the server
-
-  // Fetch valid codes when the component mounts
-  useEffect(() => {
-    const loadValidCodes = async () => {
-      const codes = await fetchValidCodes(); // Fetch valid codes (function provided as a prop)
-      setValidCodes(codes);
-    };
-    loadValidCodes();
-  }, [fetchValidCodes]);
 
   // Handle manual code entry
   const handleCodeChange = (e) => {
@@ -23,7 +16,7 @@ const ParticipantDashboard = ({ name, fetchValidCodes }) => {
 
   // Validate the entered or scanned code
   const handleConfirm = () => {
-    if (validCodes.includes(code)) {
+    if (sendParticipationCode(code)) {
       setMessage({ text: 'Code is valid! Welcome.', type: 'success' });
     } else {
       setMessage({ text: 'Invalid code. Please try again.', type: 'error' });
