@@ -15,9 +15,9 @@ const ParticipantDashboard = ({ name }) => {
   };
 
   // Validate the entered or scanned code
-  const handleConfirm = () => {
-    let eventName = sendParticipationCode(code)
-    
+  const handleConfirm = async () => {
+    let eventName = await sendParticipationCode(code)
+    console.log(eventName)
     if (eventName) {
       setMessage({ text: `Code is valid! Welcome to ${eventName}`, type: 'success' });
     } else {
