@@ -22,15 +22,15 @@ const AttendeeList = (attendees) => {
               </h1>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-primary ms-3"
               >.CSV</button>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-primary ms-3"
               >.XLS</button>
               {/* <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-primary ml-3"
               >Refresh</button> */}
               <button
                 type="button"
