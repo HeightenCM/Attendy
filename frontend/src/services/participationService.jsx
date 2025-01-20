@@ -20,9 +20,7 @@ export async function sendParticipationCode(code){ //returns name of event if co
     await axios.post('http://localhost:3000/api/participation/sendCode', codeJson, { headers })
         .then(res =>{
             eventName = res.data;
-            console.log(res.data)
         })
-    console.log(eventName)
     return eventName;
 }
 
