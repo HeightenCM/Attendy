@@ -1,20 +1,16 @@
+// eslint-disable-next-line no-unused-vars
 import React from "react";
-import { useState } from "react";
 
 const AttendeeList = (attendees) => {
-  let aux = [];
-  if (!Array.isArray(attendees)) {
-    aux.push(attendees);
-    attendees = aux;
-  }
-  console.log("Aux is ", aux);
-  const [attendeesList, setAttendeesList] = useState(aux);
+
+  attendees = attendees.attendees
+  
   return (
     <>
       <div
         className="modal fade"
         id="exampleModal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
@@ -33,8 +29,8 @@ const AttendeeList = (attendees) => {
             </div>
             <div className="modal-body">
               <ul className="list-group">
-                {attendeesList &&
-                  attendeesList.map((attendee) => (
+                {attendees &&
+                  attendees.map((attendee) => (
                     <li className="list-group-item" key={attendee.email}>
                       {attendee.name}
                     </li>

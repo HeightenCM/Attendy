@@ -121,7 +121,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
 
   const handleGenerateCode = async (eventId) => {
     const code = await generateCode(eventId);
-    console.log(code);
+    console.log("New code", code);
     const auxEvents = events;
     auxEvents.find((item) => item.id === eventId).code = code;
     setEvents(auxEvents);
@@ -154,7 +154,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
   };
 
   const passAttendees = () => {
-    console.log(attendees);
+    console.log("attendees when passing: ",attendees);
     return attendees;
   };
 

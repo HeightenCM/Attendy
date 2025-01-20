@@ -13,9 +13,9 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //Sync db
-sequelize.sync({ force: true }).then(() => {
-  console.log("Db synced");
-});
+// sequelize.sync({ force: true }).then(() => {
+//   console.log("Db synced");
+// });
 
 //APIs
 //app.get('/api/user/test',userController.test)
