@@ -7,7 +7,6 @@ import {
 } from "../services/participationService";
 import { QRCodeSVG } from "qrcode.react";
 import AttendeeList from "./AttendeeList";
-// eslint-disable-next-line no-unused-vars
 import NavBar from "./NavBar";
 
 // eslint-disable-next-line react/prop-types
@@ -60,10 +59,28 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
+    console.log("selected event: ", event)
+
+    const startTime = new Date(event.startTime);
+    let year = startTime.getFullYear();
+    let month = String(startTime.getMonth() + 1).padStart(2, '0');
+    let day = String(startTime.getDate()).padStart(2, '0');
+    let hours = String(startTime.getHours()).padStart(2, '0');
+    let minutes = String(startTime.getMinutes()).padStart(2, '0');
+    const startDatetimeForInput = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+    const endTime = new Date(event.startTime);
+    year = endTime.getFullYear();
+    month = String(endTime.getMonth() + 1).padStart(2, '0');
+    day = String(endTime.getDate()).padStart(2, '0');
+    hours = String(endTime.getHours()).padStart(2, '0');
+    minutes = String(endTime.getMinutes()).padStart(2, '0');
+    const endDatetimeForInput = `${year}-${month}-${day}T${hours}:${minutes}`;
+
     setUpdatedEventDetails({
       name: event.name,
-      startTime: event.startTime || "",
-      endTime: event.endTime || "",
+      startTime: startDatetimeForInput || "",
+      endTime: endDatetimeForInput || "",
       repeat: false,
       repeatType: "daily",
       repeatCount: 1,
