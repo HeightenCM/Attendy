@@ -28,9 +28,9 @@ User.belongsToMany(Event, {
 });
 
 //Sync db
-// sequelize.sync({ force: true }).then(() => {
-//   console.log("Db synced");
-// });
+sequelize.sync({ force: true }).then(() => {
+  console.log("Db synced");
+});
 
 //APIs
 //app.get('/api/user/test',userController.test)
@@ -39,6 +39,7 @@ app.post("/api/user/login", userController.login);
 app.get("/api/user/name", userController.getName);
 
 app.post("/api/event/create", eventController.postEvent);
+app.put("/api/event/update", eventController.updateEvent);
 app.get("/api/event/getEvents", eventController.getEvents);
 app.delete("/api/event/delete", eventController.deleteEvent);
 

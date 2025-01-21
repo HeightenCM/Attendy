@@ -41,16 +41,27 @@ export async function deleteEvent(event) {
 
 export async function updateEvent(event) {
   const response = await axios.put(
-    `http://localhost:3000/api/event/update?id=${event.eventId}`,
-    event
+    `http://localhost:3000/api/event/update?id=${event.id}`,
+    event,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
   );
   return response.data;
 }
 
 export const postEvent = async (event) => {
+  const token = localStorage.getItem("token");
   const response = await axios.post(
     "http://localhost:3000/api/event/create",
-    event
+    event,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
   return response.data;
 };
