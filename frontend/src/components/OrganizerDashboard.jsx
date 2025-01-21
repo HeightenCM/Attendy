@@ -52,7 +52,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
           status: determineEventStatus(event.startTime, event.endTime),
         }))
       );
-    }, 10000);
+    }, 1000);
 
     return () => clearInterval(intervalId);
   }, []);
