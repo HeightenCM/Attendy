@@ -9,7 +9,7 @@ const NavBar = () => {
     return(
         <nav className="navbar navbar-expand-lg navbar-darj bg-dark position-absolute justify-content-end">
             <div className="nav-item">
-                <button className="btn btn-dark ms-3" onClick={()=>{disconnect();navigate('/');}}>Disconnect</button>
+                <button className="btn btn-danger ms-3" onClick={()=>{disconnect();navigate('/');}}>Disconnect</button>
             </div>
 
         </nav>
