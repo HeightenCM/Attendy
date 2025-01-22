@@ -216,7 +216,7 @@ const OrganizerDashboard = ({ name, initialEvents = [] }) => {
                 ))}
               </ul>
               <button
-                className="btn btn-primary mt-3 w-100"
+                className="btn btn-success mt-3 w-100"
                 onClick={handleAddEvent}
               >
                 Add Event
